@@ -29,3 +29,12 @@ __pycache__/
 # Log files
 *.log
 /res
+
+/data/*
+.env
+__pycache__/
+*.pyc
+outputs/
+checkpoints/
+models/
+wandb/

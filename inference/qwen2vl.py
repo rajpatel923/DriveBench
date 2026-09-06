@@ -1,10 +1,11 @@
 """
-This example shows how to use Ray Data for running offline batch inference
-distributively on a multi-node cluster.
+Qwen2-VL variant of inference/llava1.5.py, adapted to test whether DriveBench's
+missing-frame hallucination finding generalizes beyond LLaVA.
 
-Learn more about Ray Data in https://docs.ray.io/en/latest/data/data.html
+Unlike LLaVA's raw string prompt with hand-rolled "<image>" placeholders, Qwen2-VL
+needs its own chat template and vision tokens, so this uses vLLM's LLM.chat() with
+PIL image content parts instead of LLM.generate() with a manually built prompt string.
 """
-
 
 import os
 import warnings
@@ -25,7 +26,7 @@ assert Version(ray.__version__) >= Version("2.22.0"), "Ray version must be at le
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='VLM Multi-GPU Inference')
+    parser = argparse.ArgumentParser(description='VLM Multi-GPU Inference (Qwen2-VL)')
     parser.add_argument('--model', type=str, required=True, help='VLMs')
     parser.add_argument('--data', type=str, required=True,
                         help='Path to input data JSON file')
@@ -41,7 +42,6 @@ def parse_arguments():
                         help='Maximum number of images per prompt')
     parser.add_argument('--corruption', type=str, default='',
                         help='Corruption type')
-    # Hyperparameters
     parser.add_argument('--temperature', type=float, default=0.2,
                         help='Temperature for sampling')
     parser.add_argument('--top_p', type=float, default=0.2,
@@ -66,60 +66,48 @@ class LLMPredictor:
         self.corruption = corruption
 
     def __call__(self, batch: Dict[str, Any]) -> Dict[str, Any]:
-        
+
         questions = batch['question']
         filenames = batch['image_path']
         batch_size = len(questions)
 
-        # Load images and build image placeholders and multi_modal_data
-        image_placeholders = [''] * batch_size
-        multi_modal_datas = [dict(image=[]) for _ in range(batch_size)]
+        conversations = []
         system_prompts = [self.system_prompt] * batch_size
 
         for idx, sample_filenames in enumerate(filenames):
             image_paths = [p for p in sample_filenames.values() if p is not None]
-            image_index = 1
             system_prompts[idx] = replace_system_prompt(system_prompts[idx], image_paths)
+
+            images = []
             for filename in image_paths:
                 img_path = filename
                 if self.corruption and len(self.corruption) > 1 and self.corruption != 'NoImage':
                     img_path = img_path.replace('nuscenes/samples', f'corruption/{self.corruption}')
                 if self.corruption == 'NoImage':
-                    # Generate a blank image
-                    img = np.zeros((224, 224, 3), dtype=np.uint8)
+                    img = Image.fromarray(np.zeros((224, 224, 3), dtype=np.uint8))
                 else:
                     try:
                         img = Image.open(img_path).convert('RGB')
-                        img = img.resize((224, 224))
                     except Exception as e:
                         print(f"Error loading image: {img_path}, error: {e}")
                         exit(1)
-                placeholder = f"<image>"
-                image_placeholders[idx] += placeholder + "\n"
-                # Add to multi_modal_data
-                multi_modal_datas[idx]["image"].append(img)
-                image_index += 1
+                images.append(img)
 
-        # Build the prompt
-        prompts = ["USER: "] * batch_size
-        prompts = [prompt + image_placeholder for prompt, image_placeholder in zip(prompts, image_placeholders)]
+            content = [{"type": "image_pil", "image_pil": img} for img in images]
+            content.append({"type": "text", "text": questions[idx]})
 
-        # Add system prompt
-        prompts = [prompt + system_prompt for prompt, system_prompt in zip(prompts, system_prompts)]
+            conversations.append([
+                {"role": "system", "content": system_prompts[idx]},
+                {"role": "user", "content": content},
+            ])
 
-        # Add question
-        prompts = [prompt + question + "\nASSISTANT:" for prompt, question in zip(prompts, questions)]
-
-        # batch input list
-        batch_inputs = [{"prompt": prompt, "multi_modal_data": multi_modal_data} for prompt, multi_modal_data in zip(prompts, multi_modal_datas)]
-
-        outputs = self.llm.generate(
-            batch_inputs,
+        outputs = self.llm.chat(
+            conversations,
             self.sampling_params,
             use_tqdm=False
         )
 
-        batch['prompts'] = prompts
+        batch['prompts'] = system_prompts
         if outputs is None:
             warnings.warn("[Warning]: outputs is None")
             batch['pred'] = None
@@ -138,21 +126,17 @@ def main():
     with open(args.system_prompt, 'r') as f:
         system_prompt = f.read()
 
-    # Create sampling params
     sampling_params = SamplingParams(
         temperature=args.temperature,
         top_p=args.top_p,
         max_tokens=args.max_tokens
     )
 
-    # Used GPU = tensor_parallel_size * num_processes
     tensor_parallel_size = 1
     num_instances = args.num_processes
 
-    # Read input data
     ds = ray.data.read_json(args.data)
 
-    # For tensor_parallel_size > 1, create placement groups
     def scheduling_strategy_fn():
         pg = ray.util.placement_group(
             [{"GPU": 1, "CPU": 1}] * tensor_parallel_size,
@@ -168,7 +152,6 @@ def main():
         resources_kwarg["num_gpus"] = 0
         resources_kwarg["ray_remote_args_fn"] = scheduling_strategy_fn
 
-    # Apply batch inference for all input data
     ds = ds.map_batches(
         LLMPredictor,
         fn_constructor_args=(
@@ -180,24 +163,20 @@ def main():
             tensor_parallel_size,
             args.corruption
         ),
-        # Set the concurrency to the number of LLM instances
         concurrency=num_instances,
-        # Specify the batch size for inference
         batch_size=1,
         **resources_kwarg,
     )
 
     if not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
-        
+
     ds.write_json(args.output)
 
-    # Save the results into a JSON file
     res = load_json_files(args.output)
     save_json(res, args.output + ".json")
-    # remove the temporary folder
     os.system(f"rm -r {args.output}")
-    
+
 
 if __name__ == '__main__':
     main()
