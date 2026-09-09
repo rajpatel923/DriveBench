@@ -259,3 +259,14 @@ if __name__ == '__main__':
     final_scores = evaluation.evaluation()
     print("Final Scores:")
     print(json.dumps(final_scores, indent=4))
+
+    # Persist the aggregate scores alongside the per-item GPT log, so
+    # multiple conditions (e.g. clean/framelost/noimage/recovered) can be
+    # diffed programmatically (see tools/compare_conditions.py) instead of
+    # only being available in this run's stdout.
+    scores_dir = os.path.join(os.path.dirname(args.path), "eval_scores")
+    os.makedirs(scores_dir, exist_ok=True)
+    scores_path = os.path.join(scores_dir, f"{corruption}_final_scores.json")
+    with open(scores_path, 'w') as f:
+        json.dump(final_scores, f, indent=4)
+    print(f"Saved final scores to {scores_path}")
