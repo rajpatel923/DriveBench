@@ -18,17 +18,43 @@ Usage:
 """
 
 import os
+import sys
 import json
 import argparse
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
+# Add this script's own directory first so `utils` resolves to inference/utils.py
+# rather than any site-package named `inference` (e.g. roboflow inference-sdk).
+_here = os.path.dirname(os.path.abspath(__file__))
+if _here not in sys.path:
+    sys.path.insert(0, _here)
+
 from mlx_vlm import load, generate
 from mlx_vlm.prompt_utils import apply_chat_template
 from mlx_vlm.utils import load_config
 
-from inference.utils import replace_system_prompt
+from utils import replace_system_prompt
+
+
+def _load_checkpoint(ckpt_path: str) -> tuple:
+    """Load a JSONL checkpoint and return (completed_results, completed_keys)."""
+    results, keys = [], set()
+    if not os.path.exists(ckpt_path):
+        return results, keys
+    with open(ckpt_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+                results.append(item)
+                keys.add((item["scene_token"], item["frame_token"], item["question"]))
+            except (json.JSONDecodeError, KeyError):
+                continue
+    return results, keys
 
 
 def parse_arguments():
@@ -86,8 +112,17 @@ def main():
     model, processor = load(args.model)
     config = load_config(args.model)
 
-    results = []
+    ckpt_path = args.output + ".ckpt.jsonl"
+    results, done_keys = _load_checkpoint(ckpt_path)
+    if done_keys:
+        print(f"Resuming: {len(done_keys)} entries already done, {len(data) - len(done_keys)} remaining")
+    ckpt_f = open(ckpt_path, "a")
+
     for entry in tqdm(data, desc=f"corruption={args.corruption or 'clean'}"):
+        entry_key = (entry["scene_token"], entry["frame_token"], entry["question"])
+        if entry_key in done_keys:
+            continue
+
         image_paths, images = load_images(entry['image_path'], args.corruption)
         system_prompt = replace_system_prompt(base_system_prompt, image_paths)
 
@@ -112,10 +147,15 @@ def main():
         # recent versions; fall back to str() if a plain string is returned instead.
         result['pred'] = getattr(output, 'text', output)
         results.append(result)
+        ckpt_f.write(json.dumps(result) + "\n")
+        ckpt_f.flush()
 
+    ckpt_f.close()
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     with open(args.output, 'w') as f:
         json.dump(results, f, indent=4)
+    if os.path.exists(ckpt_path):
+        os.remove(ckpt_path)
 
     print(f"Wrote {len(results)} results to {args.output}")
 

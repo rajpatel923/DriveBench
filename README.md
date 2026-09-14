@@ -88,6 +88,11 @@ If you find this work helpful for your research, please kindly consider citing o
 - [Installation](#gear-installation)
 - [Data Preparation](#hotsprings-data-preparation)
 - [Getting Started](#rocket-getting-started)
+- [Frame Recovery Experiments](#camera-frame-recovery-experiments)
+  - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+  - [Step-by-Step Workflow](#step-by-step-workflow)
+  - [Platform Guide](#platform-guide)
 - [Benchmark Results](#aerial_tramway-benchmark-results)
   - [Benchmark Configuration](#benchmark-configuration)
   - [Benchmark Study](#benchmark-study)
@@ -274,6 +279,248 @@ Kindly refer to [DATA_PREPAER.md](./docs/DATA_PREPAER.md) for the details to pre
 
 To learn more usage about this codebase, kindly refer to [GET_STARTED.md](./docs/GET_STARTED.md).
 
+
+
+# :camera: Frame Recovery Experiments
+
+## Overview
+
+This extension adds a **frame-recovery layer** on top of DriveBench to study how VLMs respond when lost camera frames are reconstructed from temporal neighbors instead of being left blank. Four recovery strategies are included:
+
+| Strategy | Description | Real-time safe? |
+|---|---|---|
+| `previous` | Substitute the nearest past sweep | Yes |
+| `nearest` | Substitute the closest sweep (past or future) | Buffered |
+| `linear_blend` | Weighted PIL blend of the surrounding pair | Buffered |
+| `rife` | RIFE learned interpolation (GPU optional) | No |
+
+Six VLM test conditions are compared end-to-end:
+
+| Condition | Image source | Flag needed |
+|---|---|---|
+| `clean` | Original DriveBench keyframes | — |
+| `noimage` | Blank black placeholder | — |
+| `previous` | `Recovered_Previous/` | — |
+| `nearest` | `Recovered_Nearest/` | — |
+| `linear_blend` | `Recovered_Linearblend/` | — |
+| `rife` | `Recovered_RIFE/` (learned interpolation) | `--with-rife` |
+| `lidar` | `Recovered_LiDAR/` (depth-colourised projection) | `--with-lidar` |
+
+Image quality is validated independently (PSNR / SSIM / L1) so you can evaluate reconstruction fidelity without running any VLM.
+
+---
+
+## Prerequisites
+
+### 1 — Install dependencies
+
+```bash
+# Core
+pip install -r requirements.txt
+
+# macOS (Apple Silicon) — MLX inference
+pip install mlx-lm mlx-vlm
+
+# Linux / WSL2 — vLLM inference
+pip install vllm
+```
+
+### 2 — Download nuScenes data
+
+Go to the [nuScenes download page](https://www.nuscenes.org/nuscenes) and download:
+
+| Package | Size | Required for |
+|---|---|---|
+| `v1.0-trainval_meta.tgz` | ~0.43 GB | metadata (always needed) |
+| `v1.0-trainval01_blobs.tgz` | ~26 GB | blobs 01 (first 18 keyframes — pilot) |
+| Additional blobs 02–10 | ~28–38 GB each | full 200-frame coverage |
+
+Extract into `data/nuscenes/` so the layout is:
+
+```
+data/nuscenes/
+  v1.0-trainval_meta/
+    v1.0-trainval/        ← scene.json, sample.json, …
+  v1.0-trainval01_blobs/
+    samples/              ← keyframe images
+    sweeps/               ← sweep images (temporal neighbors)
+```
+
+> **Pilot run (macOS / fast test):** blob 01 alone covers 18 of the 200 DriveBench keyframes.  
+> Use `--pilot` / `--limit 20` flags (described below) to test without all blobs.
+
+---
+
+## Step-by-Step Workflow
+
+All numbered scripts in `script/` run the complete pipeline in order.  
+Run them from the **repo root**.
+
+### Step 0 — Set up RIFE (optional, GPU/MPS recommended)
+
+RIFE requires a one-time clone of the model repo and manual weight download.  
+Steps 1–4 work without RIFE; add `--with-rife` to any step to include it.
+
+```bash
+bash script/00_setup_rife.sh
+```
+
+If weights are missing, the script prints exact download instructions pointing to
+[the RIFE model list](https://github.com/hzwer/ECCV2022-RIFE#model-list).  
+Extract the HDv3 weights so that `recovery/rife/train_log/flownet.pkl` exists, then re-run to confirm.
+
+> **Platform note:** On macOS (Apple Silicon) RIFE runs on MPS (float32 fallback).  
+> On Linux/WSL2 it runs on CUDA. CPU fallback works but is very slow (~2 min/frame).
+
+> **LiDAR note:** No model weights needed for `--with-lidar` — it is pure numpy + PIL.  
+> It only requires the `sweeps/LIDAR_TOP/*.bin` files already present in your nuScenes blob.
+
+### Step 1 — Build neighbor manifest + recovered images
+
+```bash
+# Full run (all available frames)
+bash script/01_build_recovery.sh
+
+# Quick pilot — first 20 frames only
+bash script/01_build_recovery.sh --limit 20
+
+# Include RIFE (requires Step 0 complete)
+bash script/01_build_recovery.sh --with-rife
+bash script/01_build_recovery.sh --limit 20 --with-rife
+
+# Include LiDAR (no setup needed — requires sweeps/LIDAR_TOP/ in BLOB_DIR)
+bash script/01_build_recovery.sh --with-lidar
+bash script/01_build_recovery.sh --limit 20 --with-lidar
+
+# Run everything at once
+bash script/01_build_recovery.sh --limit 20 --with-rife --with-lidar
+```
+
+This script:
+1. Runs `tools/fetch_nuscenes_temporal_neighbors.py` to copy sweep images alongside each keyframe.
+2. Runs `recovery/temporal_recovery.py` for each strategy to produce:
+
+```
+data/corruption/
+  Recovered_Previous/
+  Recovered_Nearest/
+  Recovered_LinearBlend/
+  Recovered_RIFE/          ← only when --with-rife is passed
+  Recovered_LiDAR/         ← only when --with-lidar is passed
+```
+
+### Step 2 — Validate image quality (no VLM needed)
+
+```bash
+bash script/02_validate_recovery.sh
+```
+
+Computes PSNR, SSIM, and L1 error for each recovery method vs. the original keyframes.  
+Output: `data/recovery_validation.json`
+
+Example pilot results (18 frames, blob 01):
+
+| Method | PSNR (dB) | SSIM |
+|---|---|---|
+| `previous` | ~19.7 | ~0.67 |
+| `nearest` | ~20.5 | ~0.69 |
+| `linear_blend` | ~21.7 | ~0.72 |
+
+### Step 3 — Run VLM inference
+
+#### macOS (Apple Silicon — MLX)
+
+```bash
+# Full dataset, 5 conditions (clean / noimage / previous / nearest / linear_blend)
+bash script/03_run_inference_mac.sh
+
+# Pilot subset (18-frame blob-01 subset, ~102 questions)
+bash script/03_run_inference_mac.sh --pilot
+
+# Include RIFE as 6th condition (requires Recovered_RIFE/ from Step 1)
+bash script/03_run_inference_mac.sh --pilot --with-rife
+
+# Include LiDAR as 7th condition (requires Recovered_LiDAR/ from Step 1)
+bash script/03_run_inference_mac.sh --pilot --with-lidar
+
+# All conditions
+bash script/03_run_inference_mac.sh --pilot --with-rife --with-lidar
+```
+
+Results are written to `output/` as JSON files, e.g.:
+
+```
+output/pilot_clean.json
+output/pilot_previous.json
+output/pilot_nearest.json
+output/pilot_linearblen.json
+output/pilot_noimage.json
+```
+
+> Inference is checkpointed (`.ckpt.jsonl` files).  
+> If interrupted, re-running the same script resumes from the last completed question.
+
+#### Linux / WSL2 (vLLM + CUDA)
+
+```bash
+# Full dataset
+bash script/03_run_inference_linux.sh
+
+# Pilot subset
+bash script/03_run_inference_linux.sh --pilot
+
+# Include RIFE as 6th condition
+bash script/03_run_inference_linux.sh --pilot --with-rife
+
+# Include LiDAR as 7th condition
+bash script/03_run_inference_linux.sh --pilot --with-lidar
+
+# All conditions
+bash script/03_run_inference_linux.sh --pilot --with-rife --with-lidar
+```
+
+The script auto-detects WSL2 and adjusts GPU memory limits accordingly.
+
+### Step 4 — Compare conditions
+
+```bash
+bash script/04_compare_conditions.sh --model qwen2.5-vl-7b-mlx
+
+# Include RIFE and/or LiDAR in the comparison table
+bash script/04_compare_conditions.sh --model qwen2.5-vl-7b-mlx --with-rife
+bash script/04_compare_conditions.sh --model qwen2.5-vl-7b-mlx --with-lidar
+bash script/04_compare_conditions.sh --model qwen2.5-vl-7b-mlx --with-rife --with-lidar
+```
+
+Prints a per-condition accuracy table with 95 % bootstrap confidence intervals on the delta vs. clean, and summarises image quality from Step 2.
+
+Expected ordering:
+
+```
+clean > rife ≥ nearest > lidar > previous > noimage / FrameLost
+```
+
+> LiDAR PSNR will be lower than temporal methods (different modality), but VLM scores should exceed blank since depth maps carry spatial structure.
+
+---
+
+## Platform Guide
+
+| Feature | macOS (Apple Silicon) | Linux / WSL2 |
+|---|---|---|
+| Inference backend | MLX (`mlx-community/Qwen2.5-VL-7B-Instruct-bf16`) | vLLM (`Qwen/Qwen2.5-VL-7B-Instruct`) |
+| Inference script | `script/03_run_inference_mac.sh` | `script/03_run_inference_linux.sh` |
+| Env file sourced | `env.sh` | `env.linux.sh` |
+| Recovery scripts | `script/01_build_recovery.sh` | same |
+| Validation script | `script/02_validate_recovery.sh` | same |
+| RIFE support | MPS (float32 fallback) | CUDA |
+| Pilot mode flag | `--pilot` | `--pilot` |
+
+> All recovery-building and validation steps are pure Python / PIL and work identically on both platforms (no GPU required).
+
+---
+
+For more details on the recovery implementations, see [`recovery/temporal_recovery.py`](./recovery/temporal_recovery.py) and the individual tool scripts in [`tools/`](./tools/).
 
 
 # :aerial_tramway: Benchmark Results

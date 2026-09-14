@@ -1,0 +1,20 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(chmod +x '/Users/rajpatel/Library/CloudStorage/OneDrive-TexasA&MUniversity-CorpusChristi/TAMUCC_SEM_9/Research Code/DriveBench/script/qwen2.5vl-7b-mlx-recovered-previous.sh' '/Users/rajpatel/Library/CloudStorage/OneDrive-TexasA&MUniversity-CorpusChristi/TAMUCC_SEM_9/Research Code/DriveBench/script/qwen2.5vl-7b-mlx-recovered-linearblen.sh' '/Users/rajpatel/Library/CloudStorage/OneDrive-TexasA&MUniversity-CorpusChristi/TAMUCC_SEM_9/Research Code/DriveBench/script/qwen2.5vl-7b-recovered-previous.sh' '/Users/rajpatel/Library/CloudStorage/OneDrive-TexasA&MUniversity-CorpusChristi/TAMUCC_SEM_9/Research Code/DriveBench/script/qwen2.5vl-7b-recovered-linearblen.sh')",
+      "Bash(pip install *)",
+      "Bash(python inference/qwen2vl_mlx.py --help)",
+      "Bash(python inference/qwen2vl_mlx.py --model mlx-community/Qwen2.5-VL-7B-Instruct-bf16 --data data/blob01_subset.json --output res/qwen2.5-vl-7b-mlx/pilot_clean.json --system_prompt prompt.txt)",
+      "Bash(python inference/qwen2vl_mlx.py --model mlx-community/Qwen2.5-VL-7B-Instruct-bf16 --data data/blob01_subset.json --output res/qwen2.5-vl-7b-mlx/pilot_noimage.json --system_prompt prompt.txt --corruption NoImage)",
+      "Bash(python inference/qwen2vl_mlx.py --model mlx-community/Qwen2.5-VL-7B-Instruct-bf16 --data data/blob01_subset.json --output res/qwen2.5-vl-7b-mlx/pilot_previous.json --system_prompt prompt.txt --corruption Recovered_Previous)",
+      "Bash(python inference/qwen2vl_mlx.py --model mlx-community/Qwen2.5-VL-7B-Instruct-bf16 --data data/blob01_subset.json --output res/qwen2.5-vl-7b-mlx/pilot_nearest.json --system_prompt prompt.txt --corruption Recovered_Nearest)",
+      "Bash(python inference/qwen2vl_mlx.py --model mlx-community/Qwen2.5-VL-7B-Instruct-bf16 --data data/blob01_subset.json --output res/qwen2.5-vl-7b-mlx/pilot_linearblen.json --system_prompt prompt.txt --corruption Recovered_LinearBlend)",
+      "Bash(kill 79507)",
+      "Bash(kill 79638)"
+    ]
+  }
+}

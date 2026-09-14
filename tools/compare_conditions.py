@@ -22,11 +22,27 @@ Usage:
 import argparse
 import json
 import os
+import random
 import re
 import statistics
 from collections import defaultdict
 
 SCORE_PATTERN = re.compile(r"Total Score:\s*(\d{1,3})\b")
+
+
+def compute_bootstrap_ci(deltas: list, n_bootstrap: int = 1000, ci: float = 0.95) -> tuple:
+    """Return (lower, upper) bootstrap confidence interval for the mean delta."""
+    if len(deltas) < 2:
+        m = statistics.mean(deltas) if deltas else float("nan")
+        return m, m
+    means = []
+    for _ in range(n_bootstrap):
+        sample = random.choices(deltas, k=len(deltas))
+        means.append(statistics.mean(sample))
+    means.sort()
+    lo = int((1 - ci) / 2 * n_bootstrap)
+    hi = int((1 + ci) / 2 * n_bootstrap) - 1
+    return means[lo], means[hi]
 
 
 def load_predictions(model_dir: str, condition: str):
@@ -80,14 +96,32 @@ def main():
                          help="Condition names to compare, e.g. clean framelost noimage recovered")
     parser.add_argument("--baseline", default=None,
                          help="Condition to use as the paired-comparison baseline (default: first in --conditions)")
+    parser.add_argument("--missing-threshold", type=float, default=1.0,
+                         help="Warn when a condition covers less than this fraction of all keys (default: 1.0)")
+    parser.add_argument("--seed", type=int, default=42,
+                         help="Random seed for bootstrap CI (default: 42)")
     args = parser.parse_args()
 
+    random.seed(args.seed)
     model_dir = os.path.join(args.res_dir, args.model)
     baseline = args.baseline or args.conditions[0]
 
     preds = {c: load_predictions(model_dir, c) for c in args.conditions}
     gpt_scores = {c: load_gpt_log(model_dir, c) for c in args.conditions}
     final_scores = {c: load_final_scores(model_dir, c) for c in args.conditions}
+
+    # Coverage report: which keys appear in ALL conditions vs partial
+    all_keys = set().union(*(set(preds[c]) for c in args.conditions))
+    print(f"=== Coverage report (predictions) ===")
+    print(f"  Union of all keys: {len(all_keys)}")
+    for c in args.conditions:
+        keys_c = set(preds[c])
+        frac = len(keys_c) / len(all_keys) if all_keys else 0.0
+        warn = " *** BELOW THRESHOLD ***" if frac < args.missing_threshold else ""
+        print(f"  {c}: {len(keys_c)}/{len(all_keys)} ({frac:.1%}){warn}")
+    keys_in_all = set.intersection(*(set(preds[c]) for c in args.conditions)) if args.conditions else set()
+    print(f"  Keys present in ALL conditions: {len(keys_in_all)}")
+    print()
 
     print(f"=== Aggregate final_scores (from evaluate/eval.py) ===")
     for c in args.conditions:
@@ -115,8 +149,10 @@ def main():
         improved = sum(1 for d in deltas if d > 0)
         worsened = sum(1 for d in deltas if d < 0)
         unchanged = sum(1 for d in deltas if d == 0)
+        ci_lo, ci_hi = compute_bootstrap_ci(deltas)
         print(f"  {c} vs {baseline} (n={len(deltas)} matched items):")
-        print(f"    mean delta: {statistics.mean(deltas):+.2f}   median delta: {statistics.median(deltas):+.2f}")
+        print(f"    mean delta: {statistics.mean(deltas):+.2f}  95% CI [{ci_lo:+.2f}, {ci_hi:+.2f}]"
+              f"   median: {statistics.median(deltas):+.2f}")
         print(f"    improved: {improved} ({improved/len(deltas):.1%})   "
               f"worsened: {worsened} ({worsened/len(deltas):.1%})   "
               f"unchanged: {unchanged} ({unchanged/len(deltas):.1%})")
