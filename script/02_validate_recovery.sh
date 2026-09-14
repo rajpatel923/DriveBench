@@ -32,7 +32,8 @@ RECOVERED_DIRS=()
 for d in data/corruption/Recovered_Previous \
           data/corruption/Recovered_Nearest \
           data/corruption/Recovered_LinearBlend \
-          data/corruption/Recovered_RIFE; do
+          data/corruption/Recovered_RIFE \
+          data/corruption/Recovered_LiDAR; do
     [[ -d "$d" ]] && RECOVERED_DIRS+=("$d")
 done
 

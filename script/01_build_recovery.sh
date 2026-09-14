@@ -88,12 +88,14 @@ fi
 if [[ $WITH_LIDAR -eq 1 ]]; then
     echo ""
     echo "  -> strategy: lidar  dest: data/corruption/Recovered_LiDAR"
+    # No --limit here: the manifest has all 200 DriveBench frame tokens but only
+    # blob-01 frames have local LIDAR files; the script skips missing files gracefully,
+    # so all 200 are attempted and only ~18 succeed (the downloaded blob's frames).
     python recovery/lidar_recovery.py \
         --meta-dir      "$META_DIR" \
         --nuscenes-root "$BLOB_DIR" \
         --dest          "data/corruption/Recovered_LiDAR" \
-        --manifest      "$MANIFEST" \
-        ${LIMIT_ARGS}
+        --manifest      "$MANIFEST"
 else
     echo ""
     echo "  [LiDAR skipped — pass --with-lidar to include it]"

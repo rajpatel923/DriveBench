@@ -26,10 +26,15 @@ source "$(dirname "$0")/../env.sh"
 PILOT=0
 WITH_RIFE=0
 WITH_LIDAR=0
-for arg in "$@"; do
-    [[ "$arg" == "--pilot" ]]      && PILOT=1
-    [[ "$arg" == "--with-rife" ]]  && WITH_RIFE=1
-    [[ "$arg" == "--with-lidar" ]] && WITH_LIDAR=1
+LIMIT=0
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --pilot)      PILOT=1; shift ;;
+        --with-rife)  WITH_RIFE=1; shift ;;
+        --with-lidar) WITH_LIDAR=1; shift ;;
+        --limit)      LIMIT="$2"; shift 2 ;;
+        *) echo "Unknown arg: $1"; exit 1 ;;
+    esac
 done
 
 if [[ $PILOT -eq 1 ]]; then
@@ -62,6 +67,7 @@ run_condition() {
         --system_prompt "$SYSTEM_PROMPT"
     )
     [[ -n "$corruption" ]] && args+=(--corruption "$corruption")
+    [[ "$LIMIT" -gt 0 ]] && args+=(--limit "$LIMIT")
 
     python inference/qwen2vl_mlx.py "${args[@]}"
     echo "Done: $label"

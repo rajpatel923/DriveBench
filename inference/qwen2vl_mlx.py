@@ -112,7 +112,9 @@ def main():
     model, processor = load(args.model)
     config = load_config(args.model)
 
-    ckpt_path = args.output + ".ckpt.jsonl"
+    # Write checkpoints to /tmp to avoid OneDrive sync timeouts on flush()
+    _ckpt_name = os.path.basename(args.output) + ".ckpt.jsonl"
+    ckpt_path = os.path.join("/tmp", _ckpt_name)
     results, done_keys = _load_checkpoint(ckpt_path)
     if done_keys:
         print(f"Resuming: {len(done_keys)} entries already done, {len(data) - len(done_keys)} remaining")
@@ -131,21 +133,24 @@ def main():
             processor, config, full_prompt, num_images=len(images)
         )
 
-        output = generate(
-            model,
-            processor,
-            formatted_prompt,
-            image=images,
-            max_tokens=args.max_tokens,
-            temperature=args.temperature,
-            verbose=False,
-        )
+        try:
+            output = generate(
+                model,
+                processor,
+                formatted_prompt,
+                image=images,
+                max_tokens=args.max_tokens,
+                temperature=args.temperature,
+                verbose=False,
+            )
+            pred = getattr(output, 'text', output)
+        except Exception as e:
+            print(f"\nWARN: generate() failed ({type(e).__name__}), skipping entry. Error: {e}")
+            continue
 
         result = dict(entry)
         result['prompts'] = full_prompt
-        # mlx_vlm.generate returns a GenerationResult with a .text attribute in
-        # recent versions; fall back to str() if a plain string is returned instead.
-        result['pred'] = getattr(output, 'text', output)
+        result['pred'] = pred
         results.append(result)
         ckpt_f.write(json.dumps(result) + "\n")
         ckpt_f.flush()

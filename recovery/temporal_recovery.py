@@ -135,16 +135,28 @@ def rife_interpolate(manifest_entry: dict, neighbors_dir: str,
         return nearest_sweep_substitution(manifest_entry, neighbors_dir)
 
     import torch
+    import torch.nn.functional as F
     import torchvision.transforms.functional as TF
 
-    device = next(rife_model.net.parameters()).device
+    device = next(rife_model.flownet.parameters()).device
     I0 = TF.to_tensor(prev_img).unsqueeze(0).to(device)
     I1 = TF.to_tensor(next_img).unsqueeze(0).to(device)
+
+    # IFNet_HDv3 has two stride-2 convs inside each IFBlock, so spatial dims
+    # must be multiples of 64 (= scale_max × 4).  nuScenes cameras are
+    # 1600×900: 900 → 960 (15×64), 1600 → 1600 (25×64).
+    _, _, h, w = I0.shape
+    ph = ((h - 1) // 64 + 1) * 64
+    pw = ((w - 1) // 64 + 1) * 64
+    if ph != h or pw != w:
+        pad = (0, pw - w, 0, ph - h)
+        I0 = F.pad(I0, pad)
+        I1 = F.pad(I1, pad)
 
     with torch.no_grad():
         middle = rife_model.inference(I0, I1, timestep=t)
 
-    return TF.to_pil_image(middle.squeeze(0).clamp(0, 1).cpu())
+    return TF.to_pil_image(middle[:, :, :h, :w].squeeze(0).clamp(0, 1).cpu())
 
 
 def _load_rife_model(weights_dir: str):
@@ -166,22 +178,17 @@ def _load_rife_model(weights_dir: str):
         )
     sys.path.insert(0, rife_repo)
 
-    from model.RIFE_HDv3 import Model  # noqa: PLC0415
-
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    else:
-        # Apple Silicon: try MPS, fall back to CPU
-        try:
-            device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
-        except AttributeError:
-            device = torch.device("cpu")
+    # The train_log/ directory ships the exact model code used to produce the
+    # weights (train_log/RIFE_HDv3.py + train_log/IFNet_HDv3.py).  Using the
+    # current model/RIFE.py causes size mismatches because the repo's main
+    # branch has since diverged to a different architecture.
+    from train_log.RIFE_HDv3 import Model  # noqa: PLC0415
 
     model = Model()
     model.load_model(weights_dir, -1)
     model.eval()
     model.device()  # moves net to device (RIFE uses cuda/cpu internally)
-    print(f"RIFE loaded from {weights_dir} | device={device}")
+    print(f"RIFE HDv3 loaded from {weights_dir}")
     return model
 
 
