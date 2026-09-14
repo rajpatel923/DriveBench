@@ -92,6 +92,7 @@ if [[ $WITH_LIDAR -eq 1 ]]; then
         --meta-dir      "$META_DIR" \
         --nuscenes-root "$BLOB_DIR" \
         --dest          "data/corruption/Recovered_LiDAR" \
+        --manifest      "$MANIFEST" \
         ${LIMIT_ARGS}
 else
     echo ""

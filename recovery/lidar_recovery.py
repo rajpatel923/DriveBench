@@ -177,11 +177,13 @@ def lidar_project(
     """
     frame_records = sample_data_index.get(frame_token, [])
 
+    # sample_data.json has no "channel" field; sensor type is in the filename path
     lidar_record = next(
-        (r for r in frame_records if r.get("channel") == "LIDAR_TOP"), None
+        (r for r in frame_records if "/LIDAR_TOP/" in r.get("filename", "")), None
     )
     cam_record = next(
-        (r for r in frame_records if r.get("channel") == camera_name), None
+        (r for r in frame_records
+         if f"/{camera_name}/" in r.get("filename", "") and r.get("is_key_frame")), None
     )
     if lidar_record is None or cam_record is None:
         return None
@@ -243,6 +245,7 @@ def build_lidar_recovered_dataset(
     data_dir: str,
     dest: str,
     limit: Optional[int] = None,
+    manifest_path: Optional[str] = None,
 ) -> tuple:
     """
     Populate dest/<CAM>/<filename> with LiDAR-projected images for every
@@ -272,6 +275,13 @@ def build_lidar_recovered_dataset(
 
     written, skipped = 0, []
     items = list(frame_to_cam_filename.items())
+
+    # If a neighbor manifest is provided, restrict to its frame tokens so that
+    # only frames covered by the downloaded blob(s) are attempted.
+    if manifest_path:
+        manifest_tokens = set(json.load(open(manifest_path)).keys())
+        items = [(t, c) for t, c in items if t in manifest_tokens]
+
     if limit:
         items = items[:limit]
 
@@ -308,10 +318,14 @@ if __name__ == "__main__":
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--dest", default="data/corruption/Recovered_LiDAR")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--manifest", default=None,
+                        help="Path to neighbor_manifest.json — restricts processing to "
+                             "frames covered by downloaded blobs (recommended for pilots)")
     args = parser.parse_args()
 
     written, skipped = build_lidar_recovered_dataset(
-        args.meta_dir, args.nuscenes_root, args.data_dir, args.dest, args.limit,
+        args.meta_dir, args.nuscenes_root, args.data_dir, args.dest,
+        args.limit, args.manifest,
     )
     print(f"Wrote {written} LiDAR-projected images to {args.dest}")
     if skipped:
