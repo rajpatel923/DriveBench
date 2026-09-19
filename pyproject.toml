@@ -1,0 +1,59 @@
+[project]
+name = "drivebench"
+version = "0.1.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "numpy>=1.24,<2.0",
+    "pillow>=10.0",
+    "tqdm>=4.65",
+    "requests>=2.31",
+    "packaging>=23.0",
+    "scikit-image>=0.22",
+    "language_evaluation @ git+https://github.com/bckim92/language-evaluation.git",
+
+    # --- Linux GPU inference (LLaVA-1.5 / Qwen2-VL / Qwen2.5-VL via vLLM) ---
+    # Floors (not exact pins) so `uv sync` resolves to whatever current vLLM/
+    # transformers/torch release actually supports Qwen2.5-VL + Blackwell
+    # (sm_120, e.g. RTX 5090) dense inference — vllm==0.6.1.post1/torch==2.4.0
+    # predate both. `torch-backend = "auto"` below (in [tool.uv]) picks the
+    # CUDA-matched torch wheel automatically. Selected automatically by
+    # `uv sync` — no flags needed.
+    "torch>=2.9; sys_platform == 'linux'",
+    "torchvision>=0.20; sys_platform == 'linux'",
+    # >=0.8.5: comfortably past both the Qwen2.5-VL addition (~0.7.3, needs
+    # transformers>=4.49) and the point basic Blackwell dense bf16/fp16
+    # inference started working. No upper bound — take current latest.
+    "vllm>=0.8.5; sys_platform == 'linux'",
+    # inference/qwen2vl.py only requires ray>=2.22.0; left unpinned above that
+    # so it isn't forced to conflict with whatever vllm now wants transitively.
+    "ray>=2.37; sys_platform == 'linux'",
+    # triton (pulled in by torch/vllm) imports setuptools at runtime for its
+    # backend loader; uv-created venvs don't seed it like classic venv/pip do.
+    "setuptools; sys_platform == 'linux'",
+    # >=4.49 is a floor, not a ceiling: that's when transformers first
+    # registered the `qwen2_5_vl` model type vLLM needs to load the checkpoint.
+    "transformers>=4.49; sys_platform == 'linux'",
+
+    # --- macOS Apple Silicon inference (Qwen2-VL / Qwen2.5-VL via MLX) ---
+    "torch>=2.1; sys_platform == 'darwin'",
+    "torchvision>=0.16; sys_platform == 'darwin'",
+    "mlx-vlm>=0.1.10; sys_platform == 'darwin'",
+    "transformers>=4.44; sys_platform == 'darwin'",
+]
+
+[project.optional-dependencies]
+# Extra tooling only needed if you run RIFE's own train/benchmark scripts
+# under recovery/rife/ (not required for the recovery pipeline used by this repo,
+# which only needs torch/torchvision/numpy/pillow, already in the core deps above).
+rife-dev = [
+    "opencv-python>=4.1.2",
+    "moviepy>=1.0.3",
+    "sk-video>=1.1.10",
+]
+
+[tool.uv]
+package = false
+# Auto-detect the installed CUDA driver/toolkit and pick a matching torch
+# wheel (e.g. cu128 for Blackwell/sm_120) instead of defaulting to CPU or an
+# older CUDA build. Only affects torch/torchvision/torchaudio resolution.
+torch-backend = "auto"

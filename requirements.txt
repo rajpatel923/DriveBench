@@ -1,0 +1,18 @@
+# Core dependencies, required on both Linux and macOS.
+# Prefer `uv sync` (see pyproject.toml) — this file is a pip-compatible fallback.
+numpy>=1.24,<2.0
+pillow>=10.0
+tqdm>=4.65
+requests>=2.31
+packaging>=23.0
+torch>=2.1
+torchvision>=0.16
+transformers>=4.44
+scikit-image>=0.22
+git+https://github.com/bckim92/language-evaluation.git
+
+# --- Platform-specific extras (install only one) ---
+# Linux GPU inference (LLaVA-1.5 / Qwen2-VL via vLLM):
+#   pip install vllm==0.6.1.post1 ray==2.37.0
+# macOS Apple Silicon inference (Qwen2-VL / Qwen2.5-VL via MLX):
+#   pip install mlx-vlm>=0.1.10
