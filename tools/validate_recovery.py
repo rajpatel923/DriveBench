@@ -67,6 +67,39 @@ def _l1(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.mean(np.abs(a.astype(float) - b.astype(float))))
 
 
+def _mask_metrics(orig: np.ndarray, rec: np.ndarray, threshold: int = 10) -> dict:
+    """
+    Metrics computed only over pixels where the recovered image actually has
+    content (e.g. a projected LiDAR point), instead of the whole frame.
+
+    Full-frame PSNR/SSIM unfairly penalizes a sparse point-overlay recovery
+    method (e.g. LiDAR projection) against a near-black background -- it will
+    always score badly there even if every point is placed correctly, since
+    it's compared against a normally-exposed photo pixel-for-pixel/window-for-
+    window. This reports how accurate the recovered pixels are *where they
+    exist*, plus how much of the frame they actually cover, so a sparse method
+    isn't mistaken for "broken" just because it isn't photorealistic.
+
+    SSIM needs spatial neighborhoods and isn't meaningful over a scattered,
+    non-contiguous pixel mask, so only pointwise metrics (PSNR/L1) are
+    reported here, alongside the coverage fraction.
+    """
+    mask = rec.max(axis=2) > threshold
+    coverage_pct = 100.0 * mask.sum() / mask.size
+    if mask.sum() == 0:
+        return {"psnr_masked": None, "l1_masked": None, "coverage_pct": 0.0}
+    orig_m = orig[mask].astype(float)
+    rec_m = rec[mask].astype(float)
+    mse = np.mean((orig_m - rec_m) ** 2)
+    psnr_masked = float("inf") if mse == 0 else 10 * np.log10(255.0 ** 2 / mse)
+    l1_masked = float(np.mean(np.abs(orig_m - rec_m)))
+    return {
+        "psnr_masked": psnr_masked,
+        "l1_masked": l1_masked,
+        "coverage_pct": coverage_pct,
+    }
+
+
 def _center_crop(arr: np.ndarray, frac: float = 0.5) -> np.ndarray:
     """Return the central frac×frac region of an HWC array."""
     h, w = arr.shape[:2]
@@ -89,7 +122,7 @@ def compare_pair(
     crop_orig = _center_crop(orig)
     crop_rec = _center_crop(rec)
 
-    return {
+    result = {
         "psnr": _psnr(orig, rec),
         "ssim": _ssim(orig, rec),
         "l1": _l1(orig, rec),
@@ -97,6 +130,8 @@ def compare_pair(
         "ssim_crop": _ssim(crop_orig, crop_rec),
         "l1_crop": _l1(crop_orig, crop_rec),
     }
+    result.update(_mask_metrics(orig, rec))
+    return result
 
 
 def _collect_framelost_pairs(framelost_dir: str) -> list[tuple[str, str]]:
@@ -209,6 +244,17 @@ def main() -> None:
         print(f"  {method_name} (n={n}):")
         print(f"    full  — PSNR: {avg_psnr:.2f} dB   SSIM: {avg_ssim:.4f}   L1: {avg_l1:.2f}")
         print(f"    crop  — PSNR: {avg_psnr_c:.2f} dB   SSIM: {avg_ssim_c:.4f}")
+
+        masked = [r for r in m_results if r.get("psnr_masked") is not None]
+        if masked:
+            avg_cov = sum(r["coverage_pct"] for r in m_results) / n
+            avg_psnr_m = sum(r["psnr_masked"] for r in masked) / len(masked)
+            avg_l1_m = sum(r["l1_masked"] for r in masked) / len(masked)
+            print(f"    masked — PSNR: {avg_psnr_m:.2f} dB   L1: {avg_l1_m:.2f}   "
+                  f"coverage: {avg_cov:.1f}% of frame (n={len(masked)})")
+            print(f"    (masked = pixel accuracy only where the recovered image has "
+                  f"content, e.g. sparse LiDAR points -- fairer than full-frame "
+                  f"PSNR/SSIM for non-photorealistic overlay methods)")
 
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
     with open(args.output, "w") as f:
