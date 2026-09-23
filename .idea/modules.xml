@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DriveBench.iml" filepath="$PROJECT_DIR$/.idea/DriveBench.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/drivebench.iml" filepath="$PROJECT_DIR$/.idea/drivebench.iml" />
     </modules>
   </component>
 </project>

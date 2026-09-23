@@ -17,13 +17,13 @@ set -euo pipefail
 
 # ---------- editable config --------------------------------------------------
 META_DIR="data/nuscenes/v1.0-trainval_meta/v1.0-trainval"
-BLOB_DIR="data/nuscenes/v1.0-trainval01_blobs"   # root with samples/ & sweeps/
+BLOB_DIRS=(data/nuscenes/v1.0-trainval*_blobs)   # all extracted blob roots (samples/ & sweeps/ each)
 NEIGHBOR_DIR="data/nuscenes/temporal_neighbors"
 STEPS=2          # sweep hops on each side of the target keyframe
 LIMIT=""         # leave empty for all frames; --limit 20 for a quick pilot
 WITH_RIFE=0      # set to 1 via --with-rife (requires weights in recovery/rife/train_log/)
 RIFE_WEIGHTS="recovery/rife/train_log"
-WITH_LIDAR=0     # set to 1 via --with-lidar (requires sweeps/LIDAR_TOP/ in BLOB_DIR)
+WITH_LIDAR=0     # set to 1 via --with-lidar (requires sweeps/LIDAR_TOP/ in one of BLOB_DIRS)
 # -----------------------------------------------------------------------------
 
 source "$(dirname "$0")/../env.sh"
@@ -42,11 +42,19 @@ LIMIT_ARGS=${LIMIT:+--limit $LIMIT}
 echo "========================================"
 echo " Step 1/2  Fetch temporal neighbors"
 echo "========================================"
-python tools/fetch_nuscenes_temporal_neighbors.py \
-    --meta-dir     "$META_DIR" \
-    --nuscenes-root "$BLOB_DIR" \
-    --dest         "$NEIGHBOR_DIR" \
-    --steps        "$STEPS"
+# nuScenes scenes are spread across all 10 trainval blob chunks, not just
+# blob-01, so we run the fetch once per extracted blob root. Each pass
+# resolves the same manifest and copies whatever it can find under that
+# root into $NEIGHBOR_DIR; files already copied by an earlier blob are left
+# alone, so coverage accumulates across the loop.
+for blob in "${BLOB_DIRS[@]}"; do
+    echo "  (searching $blob)"
+    python tools/fetch_nuscenes_temporal_neighbors.py \
+        --meta-dir     "$META_DIR" \
+        --nuscenes-root "$blob" \
+        --dest         "$NEIGHBOR_DIR" \
+        --steps        "$STEPS"
+done
 
 echo ""
 echo "========================================"
@@ -55,8 +63,10 @@ echo "========================================"
 MANIFEST="$NEIGHBOR_DIR/neighbor_manifest.json"
 
 for strategy in previous nearest linear_blend; do
-    # Capitalise first letter and strip underscores for directory name
-    dir_name="Recovered_$(echo "$strategy" | sed 's/_//g' | awk '{print toupper(substr($0,1,1)) substr($0,2)}')"
+    # Capitalise first letter of each underscore-separated word, then join
+    # (e.g. linear_blend -> LinearBlend) -- matches the "Recovered_LinearBlend"
+    # name the inference scripts' --corruption flag expects.
+    dir_name="Recovered_$(echo "$strategy" | awk -F_ '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}' OFS='')"
     dest="data/corruption/$dir_name"
     echo ""
     echo "  -> strategy: $strategy  dest: $dest"
@@ -90,18 +100,18 @@ if [[ $WITH_LIDAR -eq 1 ]]; then
     echo "  -> strategy: lidar  dest: data/corruption/Recovered_LiDAR"
     # No --limit here, and no --manifest either: lidar_recovery.py's CLI doesn't take
     # one (it derives the frame list itself from data/*.json via --data-dir). All 200
-    # DriveBench frame tokens are attempted, but only blob-01 frames have local LIDAR
-    # files on disk; the script skips missing files gracefully, so only ~18 succeed
-    # (the downloaded blob's frames).
+    # DriveBench frame tokens are attempted; --nuscenes-root takes every extracted
+    # blob dir (scenes are spread across all 10), so all frames with LIDAR_TOP data
+    # on disk anywhere are found, not just blob-01's.
     python recovery/lidar_recovery.py \
         --meta-dir      "$META_DIR" \
-        --nuscenes-root "$BLOB_DIR" \
+        --nuscenes-root "${BLOB_DIRS[@]}" \
         --data-dir      "data" \
         --dest          "data/corruption/Recovered_LiDAR"
 else
     echo ""
     echo "  [LiDAR skipped — pass --with-lidar to include it]"
-    echo "  (requires sweeps/LIDAR_TOP/ in $BLOB_DIR)"
+    echo "  (requires sweeps/LIDAR_TOP/ in one of: ${BLOB_DIRS[*]})"
 fi
 
 echo ""

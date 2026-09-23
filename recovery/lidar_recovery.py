@@ -163,7 +163,7 @@ def lidar_project(
     frame_token: str,
     camera_name: str,
     meta_dir: str,
-    nuscenes_root: str,
+    nuscenes_roots,
     calibrations: Dict[str, dict],
     ego_poses: Dict[str, dict],
     sample_data_index: Dict[str, list],
@@ -172,9 +172,16 @@ def lidar_project(
     """
     Project LIDAR_TOP into one camera for a given frame_token.
 
+    ``nuscenes_roots`` may be a single path (str) or a list of paths — nuScenes
+    scenes are spread across multiple trainval blob chunks, so each root is
+    tried in turn until the LIDAR_TOP file is found on disk.
+
     Returns a PIL.Image (output_size × output_size) with depth-colourised
     LiDAR points on a black background, or None if data is missing.
     """
+    if isinstance(nuscenes_roots, str):
+        nuscenes_roots = [nuscenes_roots]
+
     frame_records = sample_data_index.get(frame_token, [])
 
     # sample_data.json has no "channel" field; sensor type is in the filename path
@@ -188,8 +195,12 @@ def lidar_project(
     if lidar_record is None or cam_record is None:
         return None
 
-    lidar_path = os.path.join(nuscenes_root, lidar_record["filename"])
-    if not os.path.exists(lidar_path):
+    lidar_path = next(
+        (p for root in nuscenes_roots
+         if os.path.exists(p := os.path.join(root, lidar_record["filename"]))),
+        None,
+    )
+    if lidar_path is None:
         return None
 
     lidar_cal = calibrations[lidar_record["calibrated_sensor_token"]]
@@ -241,7 +252,7 @@ CAMERAS = [
 
 def build_lidar_recovered_dataset(
     meta_dir: str,
-    nuscenes_root: str,
+    nuscenes_roots,
     data_dir: str,
     dest: str,
     limit: Optional[int] = None,
@@ -250,6 +261,10 @@ def build_lidar_recovered_dataset(
     """
     Populate dest/<CAM>/<filename> with LiDAR-projected images for every
     (frame, camera) pair found in the DriveBench QA JSON files.
+
+    ``nuscenes_roots`` may be a single path (str) or a list of paths — nuScenes
+    scenes are spread across multiple trainval blob chunks, so each root is
+    tried in turn (see lidar_project).
 
     Pass --corruption Recovered_LiDAR to any inference script to read these.
     """
@@ -288,7 +303,7 @@ def build_lidar_recovered_dataset(
     for frame_token, cam_filenames in items:
         for cam, out_filename in cam_filenames.items():
             img = lidar_project(
-                frame_token, cam, meta_dir, nuscenes_root,
+                frame_token, cam, meta_dir, nuscenes_roots,
                 calibrations, ego_poses, sample_data_index,
             )
             if img is None:
@@ -313,8 +328,10 @@ if __name__ == "__main__":
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--meta-dir", required=True,
                         help="nuScenes metadata directory (contains calibrated_sensor.json etc.)")
-    parser.add_argument("--nuscenes-root", required=True,
-                        help="nuScenes root containing sweeps/LIDAR_TOP/")
+    parser.add_argument("--nuscenes-root", required=True, nargs="+",
+                        help="One or more nuScenes roots containing sweeps/LIDAR_TOP/ "
+                             "(scenes are spread across trainval blob chunks, so pass "
+                             "all extracted blob dirs to get full coverage)")
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--dest", default="data/corruption/Recovered_LiDAR")
     parser.add_argument("--limit", type=int, default=None)

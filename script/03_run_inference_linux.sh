@@ -54,7 +54,9 @@ mkdir -p "$OUT_DIR"
 run_condition() {
     local label="$1"
     local corruption="$2"
-    local output="$OUT_DIR/${PREFIX}${label}.json"
+    # No .json suffix here: qwen2vl.py's ray.data.write_json() treats --output
+    # as a directory, then re-saves the merged result to <output>.json itself.
+    local output="$OUT_DIR/${PREFIX}${label}"
 
     echo ""
     echo "----------------------------------------"
@@ -67,6 +69,7 @@ run_condition() {
         --data         "$DATA"
         --output       "$output"
         --system_prompt "$SYSTEM_PROMPT"
+        --max_model_len 16384
     )
     [[ -n "$corruption" ]] && args+=(--corruption "$corruption")
 

@@ -36,8 +36,10 @@ def parse_arguments():
                         help='System prompt file')
     parser.add_argument('--num_processes', type=int, default=8,
                         help='Number of GPUs to use')
-    parser.add_argument('--max_model_len', type=int, default=8192,
-                        help='Maximum model length')
+    parser.add_argument('--max_model_len', type=int, default=16384,
+                        help='Maximum model length. 8192 is too small for a full '
+                             '6-camera prompt at nuScenes native resolution '
+                             '(~11.2k image+text tokens observed) -- raised to 16384.')
     parser.add_argument('--num_images_per_prompt', type=int, default=6,
                         help='Maximum number of images per prompt')
     parser.add_argument('--corruption', type=str, default='',

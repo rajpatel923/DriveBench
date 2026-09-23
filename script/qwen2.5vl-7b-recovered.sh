@@ -12,5 +12,5 @@ python inference/qwen2vl.py \
     --output "res/qwen2.5-vl-7b/recovered" \
     --system_prompt prompt.txt \
     --num_processes "${GPU}" \
-    --max_model_len 8192 \
+    --max_model_len 16384 \
     --corruption "Recovered"

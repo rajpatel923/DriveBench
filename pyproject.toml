@@ -26,7 +26,9 @@ dependencies = [
     "vllm>=0.8.5; sys_platform == 'linux'",
     # inference/qwen2vl.py only requires ray>=2.22.0; left unpinned above that
     # so it isn't forced to conflict with whatever vllm now wants transitively.
-    "ray>=2.37; sys_platform == 'linux'",
+    # [data] extra: qwen2vl.py/llava1.5.py call ray.data.read_json(), which
+    # needs pandas + pyarrow (not pulled in by bare `ray`).
+    "ray[data]>=2.37; sys_platform == 'linux'",
     # triton (pulled in by torch/vllm) imports setuptools at runtime for its
     # backend loader; uv-created venvs don't seed it like classic venv/pip do.
     "setuptools; sys_platform == 'linux'",
