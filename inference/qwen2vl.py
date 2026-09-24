@@ -10,8 +10,6 @@ PIL image content parts instead of LLM.generate() with a manually built prompt s
 import os
 import warnings
 import argparse
-import numpy as np
-from PIL import Image
 from typing import Any, Dict
 from packaging.version import Version
 
@@ -20,6 +18,7 @@ from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from vllm import LLM, SamplingParams
 
 from inference.utils import replace_system_prompt, load_json_files, save_json
+from inference.conditions import load_images, load_sensor_text, build_user_text, resolve_image_note
 
 
 assert Version(ray.__version__) >= Version("2.22.0"), "Ray version must be at least 2.22.0"
@@ -44,18 +43,29 @@ def parse_arguments():
                         help='Maximum number of images per prompt')
     parser.add_argument('--corruption', type=str, default='',
                         help='Corruption type')
-    parser.add_argument('--temperature', type=float, default=0.2,
-                        help='Temperature for sampling')
-    parser.add_argument('--top_p', type=float, default=0.2,
+    parser.add_argument('--sensor_text', type=str, default='',
+                        help='Optional {frame_token: text} JSON; its report is '
+                             'prepended to every question (see inference/conditions.py)')
+    parser.add_argument('--image_note', type=str, default='auto',
+                        help="Fixed line before every question saying how non-camera images "
+                             "are drawn: 'auto' (IMAGE_NOTES for --corruption), 'none', or text")
+    parser.add_argument('--temperature', type=float, default=0.0,
+                        help='Temperature for sampling (0.0 = greedy)')
+    parser.add_argument('--top_p', type=float, default=1.0,
                         help='Top-p for sampling')
+    parser.add_argument('--seed', type=int, default=0,
+                        help='Sampling seed')
     parser.add_argument('--max_tokens', type=int, default=512,
                         help='Maximum number of tokens to generate')
+    parser.add_argument('--limit', type=int, default=None,
+                        help='Only run on the first N entries (for smoke testing)')
     return parser.parse_args()
 
 
 class LLMPredictor:
     def __init__(self, model_name, system_prompt, sampling_params,
-                 num_images_per_prompt, max_model_len, tensor_parallel_size, corruption):
+                 num_images_per_prompt, max_model_len, tensor_parallel_size, corruption,
+                 sensor_text_path, image_note=''):
         self.llm = LLM(
             model=model_name,
             trust_remote_code=True,
@@ -66,37 +76,29 @@ class LLMPredictor:
         self.system_prompt = system_prompt
         self.sampling_params = sampling_params
         self.corruption = corruption
+        self.sensor_text = load_sensor_text(sensor_text_path)
+        self.image_note = resolve_image_note(image_note, corruption)
 
     def __call__(self, batch: Dict[str, Any]) -> Dict[str, Any]:
 
         questions = batch['question']
         filenames = batch['image_path']
+        frame_tokens = batch['frame_token']
         batch_size = len(questions)
 
         conversations = []
         system_prompts = [self.system_prompt] * batch_size
+        user_texts = []
 
         for idx, sample_filenames in enumerate(filenames):
-            image_paths = [p for p in sample_filenames.values() if p is not None]
+            image_paths, images = load_images(sample_filenames, self.corruption)
             system_prompts[idx] = replace_system_prompt(system_prompts[idx], image_paths)
-
-            images = []
-            for filename in image_paths:
-                img_path = filename
-                if self.corruption and len(self.corruption) > 1 and self.corruption != 'NoImage':
-                    img_path = img_path.replace('nuscenes/samples', f'corruption/{self.corruption}')
-                if self.corruption == 'NoImage':
-                    img = Image.fromarray(np.zeros((224, 224, 3), dtype=np.uint8))
-                else:
-                    try:
-                        img = Image.open(img_path).convert('RGB')
-                    except Exception as e:
-                        print(f"Error loading image: {img_path}, error: {e}")
-                        exit(1)
-                images.append(img)
+            user_text = build_user_text(questions[idx], frame_tokens[idx], self.sensor_text,
+                                        self.image_note)
+            user_texts.append(user_text)
 
             content = [{"type": "image_pil", "image_pil": img} for img in images]
-            content.append({"type": "text", "text": questions[idx]})
+            content.append({"type": "text", "text": user_text})
 
             conversations.append([
                 {"role": "system", "content": system_prompts[idx]},
@@ -110,6 +112,7 @@ class LLMPredictor:
         )
 
         batch['prompts'] = system_prompts
+        batch['user_text'] = user_texts
         if outputs is None:
             warnings.warn("[Warning]: outputs is None")
             batch['pred'] = None
@@ -131,6 +134,7 @@ def main():
     sampling_params = SamplingParams(
         temperature=args.temperature,
         top_p=args.top_p,
+        seed=args.seed,
         max_tokens=args.max_tokens
     )
 
@@ -138,6 +142,8 @@ def main():
     num_instances = args.num_processes
 
     ds = ray.data.read_json(args.data)
+    if args.limit:
+        ds = ds.limit(args.limit)
 
     def scheduling_strategy_fn():
         pg = ray.util.placement_group(
@@ -163,7 +169,9 @@ def main():
             args.num_images_per_prompt,
             args.max_model_len,
             tensor_parallel_size,
-            args.corruption
+            args.corruption,
+            args.sensor_text,
+            args.image_note
         ),
         concurrency=num_instances,
         batch_size=1,

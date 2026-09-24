@@ -4,7 +4,7 @@ Cross-modal frame recovery via LiDAR-to-camera projection.
 When no temporal sweep neighbours exist for a frame (first/last clip frame,
 network gap), this module projects the nuScenes LIDAR_TOP point cloud into
 each camera's image plane using the nuScenes calibration data and renders a
-depth-colourised image.  The output is a 224×224 PIL image with a black
+depth-colourised image.  The output is a native 1600×900 PIL image with a black
 background and points coloured by depth (near = red, far = blue).
 
 This is intentionally lightweight — it is NOT a GAN/diffusion LiDAR→RGB
@@ -35,6 +35,7 @@ import json
 import os
 from typing import Dict, Optional
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -167,7 +168,8 @@ def lidar_project(
     calibrations: Dict[str, dict],
     ego_poses: Dict[str, dict],
     sample_data_index: Dict[str, list],
-    output_size: int = 224,
+    output_size: Optional[tuple] = None,
+    point_radius: int = 4,
 ) -> Optional[Image.Image]:
     """
     Project LIDAR_TOP into one camera for a given frame_token.
@@ -176,8 +178,9 @@ def lidar_project(
     scenes are spread across multiple trainval blob chunks, so each root is
     tried in turn until the LIDAR_TOP file is found on disk.
 
-    Returns a PIL.Image (output_size × output_size) with depth-colourised
-    LiDAR points on a black background, or None if data is missing.
+    Returns a PIL.Image (native 1600×900, or output_size=(W, H) if given) with
+    depth-colourised LiDAR points drawn as discs of point_radius px on a black
+    background, or None if data is missing.
     """
     if isinstance(nuscenes_roots, str):
         nuscenes_roots = [nuscenes_roots]
@@ -185,8 +188,11 @@ def lidar_project(
     frame_records = sample_data_index.get(frame_token, [])
 
     # sample_data.json has no "channel" field; sensor type is in the filename path
+    # Use the keyframe sweep: the index also holds the ~10 intermediate sweeps
+    # of this sample, and the first of those is up to 0.5 s off the camera.
     lidar_record = next(
-        (r for r in frame_records if "/LIDAR_TOP/" in r.get("filename", "")), None
+        (r for r in frame_records
+         if "/LIDAR_TOP/" in r.get("filename", "") and r.get("is_key_frame")), None
     )
     cam_record = next(
         (r for r in frame_records
@@ -225,18 +231,19 @@ def lidar_project(
 
     canvas = np.zeros((IMG_H, IMG_W, 3), dtype=np.uint8)
     if len(uv) > 0:
-        colours = _depth_to_colour(depths)
+        colours = (_depth_to_colour(depths) * 255).astype(np.uint8)
         u = uv[:, 0].astype(int)
         v = uv[:, 1].astype(int)
-        canvas[v, u] = (colours * 255).astype(np.uint8)
-        # Thicken points so they're visible at 224×224
-        for dv in [-1, 0, 1]:
-            for du in [-1, 0, 1]:
-                vv = np.clip(v + dv, 0, IMG_H - 1)
-                uu = np.clip(u + du, 0, IMG_W - 1)
-                canvas[vv, uu] = (colours * 255).astype(np.uint8)
+        # Draw far points first so near points (occluders) stay on top. The
+        # radius is set at native 1600×900 so points stay ~2px wide after the
+        # inference loader downsizes to 672×378.
+        for i in np.argsort(-depths):
+            cv2.circle(canvas, (int(u[i]), int(v[i])), point_radius,
+                       tuple(int(c) for c in colours[i]), -1)
 
-    img = Image.fromarray(canvas, mode="RGB").resize((output_size, output_size))
+    img = Image.fromarray(canvas)
+    if output_size is not None:
+        img = img.resize(tuple(output_size))  # (W, H)
     return img
 
 
@@ -257,6 +264,7 @@ def build_lidar_recovered_dataset(
     dest: str,
     limit: Optional[int] = None,
     manifest_path: Optional[str] = None,
+    point_radius: int = 4,
 ) -> tuple:
     """
     Populate dest/<CAM>/<filename> with LiDAR-projected images for every
@@ -305,6 +313,7 @@ def build_lidar_recovered_dataset(
             img = lidar_project(
                 frame_token, cam, meta_dir, nuscenes_roots,
                 calibrations, ego_poses, sample_data_index,
+                point_radius=point_radius,
             )
             if img is None:
                 skipped.append((frame_token, cam, "LiDAR data not found"))
@@ -338,11 +347,13 @@ if __name__ == "__main__":
     parser.add_argument("--manifest", default=None,
                         help="Path to neighbor_manifest.json — restricts processing to "
                              "frames covered by downloaded blobs (recommended for pilots)")
+    parser.add_argument("--point-radius", type=int, default=4,
+                        help="Disc radius (px at native 1600×900) for each LiDAR point")
     args = parser.parse_args()
 
     written, skipped = build_lidar_recovered_dataset(
         args.meta_dir, args.nuscenes_root, args.data_dir, args.dest,
-        args.limit, args.manifest,
+        args.limit, args.manifest, args.point_radius,
     )
     print(f"Wrote {written} LiDAR-projected images to {args.dest}")
     if skipped:

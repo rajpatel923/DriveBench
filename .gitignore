@@ -31,6 +31,7 @@ __pycache__/
 /res
 
 /data/*
+!/data/sensor_text/
 .env
 __pycache__/
 *.pyc

@@ -1,5 +1,35 @@
 # Pilot Study: Does Temporal Frame Recovery Beat the DriveBench Base Model?
 
+> **SUPERSEDED (2026-09-23).** The MCQ accuracies below were scored with the
+> upstream DriveBench parser, which lowercases the prediction and matches
+> `\b(a|option a)\b` — so any answer containing the article "a" (e.g. "C. …
+> appears to be a white van") is scored as option A. That is why clean and all
+> five recovery methods tie at 0.625 on perception MCQ. The pilot also used
+> T=0.2 sampling and mixed image resolutions (NoImage and LiDAR at 224², others
+> native). Do not cite any number in §3–4. Stage 1 replaces this pilot.
+>
+> Re-scored with the fixed parser (`python tools/rescore.py res/qwen2.5-vl-7b/pilot_*.json`).
+> Only 8 perception and 18 behavior MCQs exist in the 18-frame subset, so one
+> answer moves perception by 0.125:
+>
+> | condition | perception old → new | behavior old → new | overall old → new | unparsed (new) |
+> |---|---|---|---|---|
+> | clean | 0.625 → 0.375 | 0.444 → 0.444 | 0.500 → 0.423 | 0.000 |
+> | noimage | 0.375 → 0.125 | 0.389 → 0.278 | 0.385 → 0.231 | 0.154 |
+> | previous | 0.625 → 0.375 | 0.444 → 0.444 | 0.500 → 0.423 | 0.000 |
+> | nearest | 0.625 → 0.375 | 0.444 → 0.444 | 0.500 → 0.423 | 0.000 |
+> | linear_blend | 0.625 → 0.375 | 0.389 → 0.389 | 0.462 → 0.385 | 0.000 |
+> | rife | 0.625 → 0.375 | 0.389 → 0.389 | 0.462 → 0.385 | 0.000 |
+> | lidar | 0.625 → 0.375 | 0.167 → 0.222 | 0.308 → 0.269 | 0.000 |
+>
+> The legacy parser adds +25 points to perception MCQ on every image condition,
+> and on NoImage it hides a 50% unparsed rate (the model refuses without an
+> image, and the refusal text contains "a"). Automated consistency check: for
+> every prediction of the form "X. <option text>" in all 7 files (26/26, 20/26
+> on NoImage), the parsed letter matches the option text the model wrote; the
+> only unparsed outputs are NoImage refusals. A manual 20-per-condition check
+> (`tools/rescore.py --dump 20`) is still on the validity checklist.
+
 **Date:** 2026-09-20
 **Model:** Qwen2.5-VL-7B-Instruct (vLLM, `max_model_len=16384`)
 **Data:** 18-frame blob-01 subset (`data/blob01_subset.json`), 102 QA pairs, 7 conditions

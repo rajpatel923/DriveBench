@@ -58,37 +58,16 @@ pixel metrics are low by design — the output is a depth-colorised point-cloud
 projection, not a natural camera image, so PSNR/SSIM do not capture its
 semantic content.
 
-### VLM Answer Quality — Qwen2.5-VL-7B (ROUGE-L / BLEU-1 vs. ground truth)
+The LiDAR row predates the Stage 1 rebuild (native 1600×900, radius-4
+depth-sorted points) and will change.
 
-Pilot run: 7 conditions × 5 questions = 35 inference calls.
-Metrics are against the human-annotated ground-truth answer (not against the
-clean-condition prediction). Open-ended questions only — no MCQ in this
-5-question sample.
+### VLM Answer Quality — removed
 
-| Condition | ROUGE-L | BLEU-1 | Observation |
-|---|---|---|---|
-| **RIFE** | **0.0679** | 0.0022 | Closest to GT; beats clean on this sample |
-| Clean (no corruption) | 0.0657 | 0.0032 | Ceiling reference |
-| Previous sweep | 0.0650 | 0.0022 | |
-| Linear blend | 0.0637 | 0.0021 | |
-| Nearest sweep | 0.0625 | 0.0049 | |
-| LiDAR projection | 0.0595 | 0.0023 | Hedging responses ("to identify… we need to…") |
-| **No image** | **0.0571** | 0.0018 | Worst; also hedges without visual input |
-
-Ranking matches hypothesis: **RIFE ≥ Clean > Previous > NoImage / LiDAR**.
-ROUGE-L/BLEU are low overall (~0.06) because answers are long free-form text;
-GPT semantic scoring (`evaluate/eval.py --eval-gpt`) would give sharper
-differentiation.
-
-### Qualitative Observation
-
-`noimage` and `lidar` both produce hedging responses ("To identify the
-important objects in the current scene, we need to…") — the VLM senses
-inadequate visual input and refuses to commit. `clean`, `previous`,
-`nearest`, `linearblen`, and `rife` all give direct object lists ("The
-important objects are: 1. Cars… 2. Buildings…"), confirming that any
-recovered frame — even a low-quality previous sweep — restores the VLM's
-confidence in scene perception.
+The pilot VLM numbers previously listed here are withdrawn: they used T=0.2
+sampling, mixed image resolutions, and (for MCQ) the upstream parser that
+scores any answer containing the article "a" as option A. See the
+SUPERSEDED note in `claude/PILOT_FINDINGS.md`. Stage 1 results will be
+reported from `results/stage1/report.md`.
 
 ### Notes and Caveats
 

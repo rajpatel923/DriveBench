@@ -43,19 +43,32 @@ def preprocess_answer(answer: str) -> str:
     - answer (str): The raw output from the VLM model.
 
     Returns:
-    - str: The cleaned answer (A, B, C, or D).
+    - str: The cleaned answer (A, B, C, or D), or "" if none can be parsed.
+
+    Matches on the original case so the English article "a" is never read as
+    option A (the upstream parser lowercased first, mapping any answer that
+    contained the word "a" to A).
     """
-    answer = answer.strip().lower()
-    
-    choice_patterns = {
-        "A": r"\b(a|option a)\b",
-        "B": r"\b(b|option b)\b",
-        "C": r"\b(c|option c)\b",
-        "D": r"\b(d|option d)\b"
-    }
-    
-    for choice, pattern in choice_patterns.items():
-        if re.search(pattern, answer):
-            return choice
-    
+    if not answer:
+        return ""
+    answer = answer.strip()
+
+    # 1. Leading choice letter: "C. Going ahead", "(B)", "A:", "D"
+    m = re.match(r"^[\(\[]?([A-D])(?:[\.\):\]]|\s|$)", answer)
+    if m:
+        return m.group(1)
+
+    # 2. Explicit phrasing: "the answer is B", "Option: C", "choice (A)".
+    #    Keyword is case-insensitive; the letter must be uppercase so
+    #    "the answer is a car" doesn't parse as A.
+    m = re.search(r"(?i:answer|option|choice)\s*(?i:is|:)?\s*[\(\[]?([A-D])(?![A-Za-z])",
+                  answer)
+    if m:
+        return m.group(1)
+
+    # 3. First standalone uppercase letter anywhere
+    m = re.search(r"(?<![A-Za-z])([A-D])(?![A-Za-z])", answer)
+    if m:
+        return m.group(1)
+
     return ""
