@@ -1,0 +1,422 @@
+[
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "perception",
+        "question": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "answer": "There is a gray sedan to the back of the ego vehicle, a gray sedan to the front of the ego vehicle, and a black SUV to the front of the ego vehicle. The IDs of these objects are <c1,CAM_BACK,0.5073,0.5778>, <c2,CAM_FRONT,0.4886,0.5481>, and <c3,CAM_FRONT,0.6058,0.5769>.",
+        "tag": [
+            2
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-08-30-15-52-26-0400__CAM_FRONT__1535658934012637.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_LEFT__1535658934004799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_RIGHT__1535658934020482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-30-15-52-26-0400__CAM_BACK_LEFT__1535658934047405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_BACK_RIGHT__1535658934028113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "pred": "The important objects in the current scene are the DHL truck, the white truck, the black car, the white car, the white truck, the white building, the black building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building, the white building"
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "perception",
+        "question": "What is the moving status of object <c1,CAM_BACK,0.5073,0.5778>? Please select the correct answer from the following options: A. Going ahead. B. Turn left. C. Turn right.",
+        "answer": "A",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What is the moving status of object <c1,CAM_BACK,0.5073,0.5778>? Please select the correct answer from the following options: A. Going ahead. B. Turn left. C. Turn right.",
+        "pred": "A. Going ahead.\n\nThe object <c1,CAM_BACK,0.5073,0.5778> appears to be a truck that is moving forward on the road. There are no indications of the truck turning left or right; it is maintaining a straight path ahead."
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "prediction",
+        "question": "What object should the ego vehicle notice first when the ego vehicle is getting to the next possible location? What is the state of the object that is first noticed by the ego vehicle and what action should the ego vehicle take? What object should the ego vehicle notice second when the ego vehicle is getting to the next possible location? What is the state of the object perceived by the ego vehicle as second and what action should the ego vehicle take? What object should the ego vehicle notice third? What is the state of the object perceived by the ego vehicle as third and what action should the ego vehicle take?",
+        "answer": "Firstly, notice that black suv at front camera. The object is stationary, so the ego vehicle should continue ahead at the same speed. Secondly, notice that gray sedan at front camera. The object is stationary, so the ego vehicle should continue ahead at the same speed. Thirdly, notice that gray sedan at back camera. The object is moving ahead, so the ego vehicle should continue ahead at the same speed.",
+        "tag": [
+            3
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-08-30-15-52-26-0400__CAM_FRONT__1535658934012637.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_LEFT__1535658934004799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_RIGHT__1535658934020482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-30-15-52-26-0400__CAM_BACK_LEFT__1535658934047405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_BACK_RIGHT__1535658934028113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What object should the ego vehicle notice first when the ego vehicle is getting to the next possible location? What is the state of the object that is first noticed by the ego vehicle and what action should the ego vehicle take? What object should the ego vehicle notice second when the ego vehicle is getting to the next possible location? What is the state of the object perceived by the ego vehicle as second and what action should the ego vehicle take? What object should the ego vehicle notice third? What is the state of the object perceived by the ego vehicle as third and what action should the ego vehicle take?",
+        "pred": "The ego vehicle should notice the truck first. The truck is parked on the right side of the road. The ego vehicle should slow down and move to the left side of the road. The ego vehicle should notice the car second. The car is driving on the road. The ego vehicle should slow down and move to the left side of the road. The ego vehicle should notice the truck third. The truck is parked on the right side of the road. The ego vehicle should slow down and move to the left side of the road."
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "prediction",
+        "question": "Is <c1,CAM_BACK,0.5073,0.5778> a traffic sign or a road barrier?",
+        "answer": "No.",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "Is <c1,CAM_BACK,0.5073,0.5778> a traffic sign or a road barrier?",
+        "pred": "No, <c1,CAM_BACK,0.5073,0.5778> is not a traffic sign or a road barrier. It appears to be a utility pole with wires, which is typically used for electricity or communication purposes. Traffic signs and road barriers are usually more distinct in shape and color, and are placed at specific locations along the road to provide information or control traffic flow."
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "planning",
+        "question": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.5073,0.5778>? Why take this action and what's the probability?",
+        "answer": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.5073,0.5778>? Why take this action and what's the probability?",
+        "pred": "The ego vehicle is driving behind a large truck and a smaller car. The truck is on the left side of the road, and the smaller car is in the center lane, slightly ahead of the ego vehicle. The road appears to be a two-lane road with a solid white line on the left, indicating no passing is allowed in that direction.\n\n### Possible Actions:\n1. **Follow the Smaller Car**: The ego vehicle could maintain its current speed and follow the smaller car. This is a safe and common action in traffic, especially in urban or industrial areas where traffic is often slower and more cautious.\n2. **Pass the Smaller Car**: If the ego vehicle is in a position to safely overtake the smaller car, it could consider passing. However, given the presence of the large truck on the left, the probability of a safe pass is low because the truck might block the view or the space for a safe pass.\n3. **Stop if Necessary**: If the smaller car stops or slows down, the ego vehicle should be prepared to stop as well, especially if the road conditions or traffic signals require it.\n\n### Why Take This Action:\n- **Maintain Safety**: Following the smaller car ensures that the ego vehicle stays in a safe lane and does not obstruct the truck or other vehicles.\n- **Avoid Risk**: Overtaking the smaller car in the current situation is risky due to the large truck on the left, which could block the view and create a blind spot.\n\n### Probability:\n- **Passing the Smaller Car**: Low probability because the large truck on the left would make it difficult to safely overtake.\n- **Following the Smaller Car**: High probability because it is a safe and common action in traffic.\n- **Stopping if Necessary**: Moderate probability, depending on the traffic conditions and signals.\n\n### Conclusion:\nThe most likely action for the ego vehicle is to follow the smaller car. This action is safe and aligns with standard driving practices in such scenarios. The probability of this action is high, and it minimizes the risk of accidents or traffic violations."
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "planning",
+        "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_BACK,0.5073,0.5778>?",
+        "answer": "Back up.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_BACK,0.5073,0.5778>?",
+        "pred": "The ego vehicle is currently traveling in the same lane as the truck and the car ahead. To avoid a collision with the truck, the ego vehicle should maintain a safe following distance and be prepared to brake if the truck suddenly stops or changes lanes. If the ego vehicle is traveling too fast or too close to the truck, it could lead to a collision. Additionally, the ego vehicle should be aware of the car ahead and be prepared to react if the car in front of it suddenly stops or changes lanes. The ego vehicle should also be cautious of the truck's blind spots and be prepared to move out of the truck's path if necessary."
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "planning",
+        "question": "In this scenario, what are safe actions to take for the ego vehicle?",
+        "answer": "Keep going at the same speed, accelerate, and continue ahead.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-08-30-15-52-26-0400__CAM_FRONT__1535658934012637.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_LEFT__1535658934004799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_RIGHT__1535658934020482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-30-15-52-26-0400__CAM_BACK_LEFT__1535658934047405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_BACK_RIGHT__1535658934028113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "In this scenario, what are safe actions to take for the ego vehicle?",
+        "pred": "The truck in front of the ego vehicle is moving in the same direction as the ego vehicle. The truck is stopped at the intersection. The truck is not moving. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing. The truck is not turning. The truck is not accelerating. The truck is not braking. The truck is not reversing"
+    },
+    {
+        "scene_token": "da41ecbc644b4915b84bb732e35ebf8c",
+        "frame_token": "7e4c3282bc2a4402b5d1d6705f9eb844",
+        "question_type": "behavior",
+        "question": "Predict the behavior of the ego vehicle. Please select the correct answer from the following options: A. The ego vehicle is going straight. The ego vehicle is not moving. B. The ego vehicle is steering to the right. The ego vehicle is driving fast. C. The ego vehicle is slightly steering to the left. The ego vehicle is driving fast. D. The ego vehicle is steering to the left. The ego vehicle is driving with normal speed.",
+        "answer": "C",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-08-30-15-52-26-0400__CAM_FRONT__1535658934012637.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_LEFT__1535658934004799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_FRONT_RIGHT__1535658934020482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-08-30-15-52-26-0400__CAM_BACK__1535658934037558.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-30-15-52-26-0400__CAM_BACK_LEFT__1535658934047405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-30-15-52-26-0400__CAM_BACK_RIGHT__1535658934028113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "Predict the behavior of the ego vehicle. Please select the correct answer from the following options: A. The ego vehicle is going straight. The ego vehicle is not moving. B. The ego vehicle is steering to the right. The ego vehicle is driving fast. C. The ego vehicle is slightly steering to the left. The ego vehicle is driving fast. D. The ego vehicle is steering to the left. The ego vehicle is driving with normal speed.",
+        "pred": "D. The ego vehicle is steering to the left. The ego vehicle is driving with normal speed."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "perception",
+        "question": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "answer": "There is a black pickup truck to the back of the ego vehicle, a white truck to the front right of the ego vehicle, a yellow truck to the front of the ego vehicle, and a black SUV to the back of the ego vehicle. The IDs of these objects are <c1,CAM_BACK,0.5364,0.4806>, <c2,CAM_FRONT_RIGHT,0.8911,0.4620>, <c3,CAM_FRONT,0.2911,0.4630>, and <c4,CAM_BACK,0.7927,0.5056>.",
+        "tag": [
+            2
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-05-21-11-06-59-0400__CAM_FRONT__1526915624362465.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_LEFT__1526915624354917.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_RIGHT__1526915624369956.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-05-21-11-06-59-0400__CAM_BACK_LEFT__1526915624397295.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_BACK_RIGHT__1526915624377813.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "pred": "The important objects in the current scene are the truck, the car, the building, the road, the tree, the fence, the street sign, the parking lot, the parking space, the sidewalk, the street, the street light, the street lamp, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign, the street sign,"
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "perception",
+        "question": "What is the moving status of object <c2,CAM_FRONT_RIGHT,0.8911,0.4620>? Please select the correct answer from the following options: A. Turn right. B. Turn left. C. Going ahead.",
+        "answer": "C",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_RIGHT__1526915624369956.jpg",
+            "CAM_BACK": null,
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_FRONT_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What is the moving status of object <c2,CAM_FRONT_RIGHT,0.8911,0.4620>? Please select the correct answer from the following options: A. Turn right. B. Turn left. C. Going ahead.",
+        "pred": "C. Going ahead.\n\nThe object <c2,CAM_FRONT_RIGHT,0.8911,0.4620> appears to be a truck that is currently in motion on the road. There is no indication of it turning right or left; it seems to be moving straight ahead. The truck is positioned on the road, and there are no signs of it changing direction in the image provided."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "prediction",
+        "question": "Is <c1,CAM_BACK,0.5364,0.4806> a traffic sign or a road barrier?",
+        "answer": "No.",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "Is <c1,CAM_BACK,0.5364,0.4806> a traffic sign or a road barrier?",
+        "pred": "No, <c1,CAM_BACK,0.5364,0.4806> is not a traffic sign or a road barrier. It appears to be a part of a structure, possibly a canopy or a tent, which is likely part of a temporary setup or event area."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "planning",
+        "question": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.5364,0.4806>? Why take this action and what's the probability?",
+        "answer": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.5364,0.4806>? Why take this action and what's the probability?",
+        "pred": "The image shows a pickup truck and a minivan in a parking lot. The pickup truck is moving forward, and the minivan is stationary. The ego vehicle is positioned behind the pickup truck, and the pickup truck is in the left lane.\n\n### Possible Actions for the Ego Vehicle:\n1. **Follow the Pickup Truck**: The pickup truck is moving forward, and the ego vehicle could follow it to maintain a safe distance. This is a common action in traffic situations where vehicles are moving in the same direction.\n2. **Merge into the Right Lane**: If the pickup truck is turning or moving out of the lane, the ego vehicle could merge into the right lane to avoid following the pickup truck too closely.\n3. **Stop if Necessary**: If the pickup truck stops or slows down, the ego vehicle should be prepared to stop as well to avoid a collision.\n\n### Probability of Each Action:\n- **Follow the Pickup Truck**: This is the most likely action if the pickup truck is moving at a steady speed and there are no obstacles or traffic signals that require a change in lane. The probability of this action is high, around 70-80%.\n- **Merge into the Right Lane**: This action is less likely unless the pickup truck is turning or moving out of the lane. The probability of this action is around 10-20%.\n- **Stop if Necessary**: The probability of this action depends on the speed and behavior of the pickup truck. If the pickup truck is moving at a safe distance, the probability of stopping is low. If the pickup truck is moving slowly or stopping, the probability of stopping increases, around 10-20%.\n\n### Conclusion:\nThe most probable action for the ego vehicle is to follow the pickup truck, as it is moving forward and there are no immediate obstacles or traffic signals that require a change in lane. The probability of this action is high, around 70-80%."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "planning",
+        "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_BACK,0.5364,0.4806>?",
+        "answer": "Back up.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_BACK,0.5364,0.4806>?",
+        "pred": "The ego vehicle is currently stopped at a crosswalk, and there is a pickup truck approaching from the right. The pickup truck appears to be moving at a moderate speed, and it is in the process of turning right. The pickup truck is in the crosswalk, which is a potential conflict area for the ego vehicle.\n\nTo avoid a collision, the ego vehicle should:\n1. **Stop if necessary**: Ensure the pickup truck has fully cleared the crosswalk before proceeding.\n2. **Check for oncoming traffic**: Ensure there are no other vehicles approaching from the opposite direction.\n3. **Signal if turning**: If the ego vehicle intends to turn, it should signal its intention to turn to the right.\n\nThe pickup truck's action of turning right and entering the crosswalk is a key factor in the potential collision. The ego vehicle should be cautious and prepared to stop if necessary to avoid a collision."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "planning",
+        "question": "In this scenario, what are safe actions to take for the ego vehicle?",
+        "answer": "Keep going at the same speed, accelerate and go ahead, brake gently to a stop, decelerate gradually without braking, slightly offset to the left, change to the left lane, turn left.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-05-21-11-06-59-0400__CAM_FRONT__1526915624362465.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_LEFT__1526915624354917.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_RIGHT__1526915624369956.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-05-21-11-06-59-0400__CAM_BACK_LEFT__1526915624397295.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_BACK_RIGHT__1526915624377813.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "In this scenario, what are safe actions to take for the ego vehicle?",
+        "pred": "The ego vehicle should stop at the intersection."
+    },
+    {
+        "scene_token": "ab6eea0e06c84f70be411a9d36636a7a",
+        "frame_token": "2d493b2677f84ca190bb6c205899251a",
+        "question_type": "behavior",
+        "question": "Predict the behavior of the ego vehicle. Please select the correct answer from the following options: A. The ego vehicle is slightly steering to the left. The ego vehicle is driving with normal speed. B. The ego vehicle is slightly steering to the right. The ego vehicle is driving slowly. C. The ego vehicle is steering to the left. The ego vehicle is driving slowly. D. The ego vehicle is going straight. The ego vehicle is driving slowly.",
+        "answer": "A",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-05-21-11-06-59-0400__CAM_FRONT__1526915624362465.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_LEFT__1526915624354917.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_FRONT_RIGHT__1526915624369956.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-05-21-11-06-59-0400__CAM_BACK__1526915624387570.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-05-21-11-06-59-0400__CAM_BACK_LEFT__1526915624397295.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-05-21-11-06-59-0400__CAM_BACK_RIGHT__1526915624377813.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "Predict the behavior of the ego vehicle. Please select the correct answer from the following options: A. The ego vehicle is slightly steering to the left. The ego vehicle is driving with normal speed. B. The ego vehicle is slightly steering to the right. The ego vehicle is driving slowly. C. The ego vehicle is steering to the left. The ego vehicle is driving slowly. D. The ego vehicle is going straight. The ego vehicle is driving slowly.",
+        "pred": "D. The ego vehicle is going straight. The ego vehicle is driving slowly."
+    },
+    {
+        "scene_token": "08be42eb2186411d8e2201225329f1c6",
+        "frame_token": "818a1bd7b7394194a85163c8d95958a9",
+        "question_type": "perception",
+        "question": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "answer": "There is a black small sedan to the back of the ego vehicle, a black SUV to the back left of the ego vehicle, and a black small car to the front left of the ego vehicle. The IDs of these objects are <c1,CAM_BACK,0.7380,0.5926>, <c2,CAM_BACK_LEFT,0.1906,0.6426>, and <c3,CAM_FRONT_LEFT,0.7547,0.5703>.",
+        "tag": [
+            2
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-09-18-13-10-39-0400__CAM_FRONT__1537290858162404.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-09-18-13-10-39-0400__CAM_FRONT_LEFT__1537290858154799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-09-18-13-10-39-0400__CAM_FRONT_RIGHT__1537290858170482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-09-18-13-10-39-0400__CAM_BACK__1537290858187559.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-09-18-13-10-39-0400__CAM_BACK_LEFT__1537290858197405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-09-18-13-10-39-0400__CAM_BACK_RIGHT__1537290858178113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What are the important objects in the current scene? Those objects will be considered for the future reasoning and driving decision.",
+        "pred": "The important objects in the current scene are the car, the building, the fence, the tree, the street, the road, the sidewalk, the street sign, the traffic light, the street lamp, the trash can, the fire hydrant, the street light, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street sign, the street lamp, the street"
+    },
+    {
+        "scene_token": "08be42eb2186411d8e2201225329f1c6",
+        "frame_token": "818a1bd7b7394194a85163c8d95958a9",
+        "question_type": "perception",
+        "question": "What is the moving status of object <c1,CAM_BACK,0.7380,0.5926>? Please select the correct answer from the following options: A. Turn right. B. Turn left. C. Going ahead.",
+        "answer": "C",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-09-18-13-10-39-0400__CAM_BACK__1537290858187559.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What is the moving status of object <c1,CAM_BACK,0.7380,0.5926>? Please select the correct answer from the following options: A. Turn right. B. Turn left. C. Going ahead.",
+        "pred": "C. Going ahead.\n\nThe object <c1,CAM_BACK,0.7380,0.5926> appears to be a car moving forward on the road. There is no indication of it turning right or left; it is maintaining a straight path ahead."
+    },
+    {
+        "scene_token": "08be42eb2186411d8e2201225329f1c6",
+        "frame_token": "818a1bd7b7394194a85163c8d95958a9",
+        "question_type": "prediction",
+        "question": "What object should the ego vehicle notice first when the ego vehicle is getting to the next possible location? What is the state of the object that is first noticed by the ego vehicle and what action should the ego vehicle take? What object should the ego vehicle notice second when the ego vehicle is getting to the next possible location? What is the state of the object perceived by the ego vehicle as second and what action should the ego vehicle take? What object should the ego vehicle notice third? What is the state of the object perceived by the ego vehicle as third and what action should the ego vehicle take?",
+        "answer": "Firstly, notice that black small car at left camera. The object is stationary, so the ego vehicle should turn left. Secondly, notice that black small sedan at back camera. The object is going ahead, so the ego vehicle should turn left. Thirdly, notice that black suv at left rear camera. The object is stationary, so the ego vehicle should turn left.",
+        "tag": [
+            3
+        ],
+        "image_path": {
+            "CAM_FRONT": "data/nuscenes/samples/CAM_FRONT/n008-2018-09-18-13-10-39-0400__CAM_FRONT__1537290858162404.jpg",
+            "CAM_FRONT_LEFT": "data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-09-18-13-10-39-0400__CAM_FRONT_LEFT__1537290858154799.jpg",
+            "CAM_FRONT_RIGHT": "data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-09-18-13-10-39-0400__CAM_FRONT_RIGHT__1537290858170482.jpg",
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-09-18-13-10-39-0400__CAM_BACK__1537290858187559.jpg",
+            "CAM_BACK_LEFT": "data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-09-18-13-10-39-0400__CAM_BACK_LEFT__1537290858197405.jpg",
+            "CAM_BACK_RIGHT": "data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-09-18-13-10-39-0400__CAM_BACK_RIGHT__1537290858178113.jpg"
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with 6 camera images in the sequence [CAM_FRONT, CAM_FRONT_LEFT, CAM_FRONT_RIGHT, CAM_BACK, CAM_BACK_LEFT, CAM_BACK_RIGHT]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What object should the ego vehicle notice first when the ego vehicle is getting to the next possible location? What is the state of the object that is first noticed by the ego vehicle and what action should the ego vehicle take? What object should the ego vehicle notice second when the ego vehicle is getting to the next possible location? What is the state of the object perceived by the ego vehicle as second and what action should the ego vehicle take? What object should the ego vehicle notice third? What is the state of the object perceived by the ego vehicle as third and what action should the ego vehicle take?",
+        "pred": "The ego vehicle should notice the car first. The car is parked on the right side of the road. The ego vehicle should slow down and prepare to stop. The ego vehicle should notice the building second. The building is on the right side of the road. The ego vehicle should slow down and prepare to stop. The ego vehicle should notice the fence third. The fence is on the right side of the road. The ego vehicle should slow down and prepare to stop."
+    },
+    {
+        "scene_token": "08be42eb2186411d8e2201225329f1c6",
+        "frame_token": "818a1bd7b7394194a85163c8d95958a9",
+        "question_type": "prediction",
+        "question": "Is <c1,CAM_BACK,0.7380,0.5926> a traffic sign or a road barrier?",
+        "answer": "No.",
+        "tag": [
+            0
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-09-18-13-10-39-0400__CAM_BACK__1537290858187559.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "Is <c1,CAM_BACK,0.7380,0.5926> a traffic sign or a road barrier?",
+        "pred": "No, <c1,CAM_BACK,0.7380,0.5926> is not a traffic sign or a road barrier. It appears to be a vehicle, specifically a car, driving on the road. The object is located on the right side of the image, and its position and shape are consistent with a car rather than a traffic sign or road barrier."
+    },
+    {
+        "scene_token": "08be42eb2186411d8e2201225329f1c6",
+        "frame_token": "818a1bd7b7394194a85163c8d95958a9",
+        "question_type": "planning",
+        "question": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.7380,0.5926>? Why take this action and what's the probability?",
+        "answer": "The action is to turn left. The reason is that there is no safety issue, which is high.",
+        "tag": [
+            1
+        ],
+        "image_path": {
+            "CAM_FRONT": null,
+            "CAM_FRONT_LEFT": null,
+            "CAM_FRONT_RIGHT": null,
+            "CAM_BACK": "data/nuscenes/samples/CAM_BACK/n008-2018-09-18-13-10-39-0400__CAM_BACK__1537290858187559.jpg",
+            "CAM_BACK_LEFT": null,
+            "CAM_BACK_RIGHT": null
+        },
+        "prompts": "You are a smart autonomous driving assistant responsible for analyzing and responding to driving scenarios. You are provided with a single camera image: [CAM_BACK]. Each image has normalized coordinates from [0, 1], with (0,0) at the top left and (1,1) at the bottom right.\n\nInstructions:\n1. Answer Requirements:\n- For multiple-choice questions, provide the selected answer choice along with an explanation.\n- For \u201cis\u201d or \u201cis not\u201d questions, respond with a \u201cYes\u201d or \u201cNo\u201d, along with an explanation.\n- For open-ended perception and prediction questions, related objects to which the camera.\n\n2. Key Information for Driving Context:\n- When answering, focus on object attributes (e.g., categories, statuses, visual descriptions) and motions (e.g., speed, action, acceleration) relevant to driving safety and decision-making.\n\nUse the images and coordinate information to respond accurately to questions related to perception, prediction, planning, or behavior, based on the question requirements.\n",
+        "user_text": "What actions could the ego vehicle take based on <c1,CAM_BACK,0.7380,0.5926>? Why take this action and what's the probability?",
+        "pred": "The image shows a wet road with a car directly ahead of the ego vehicle. The road appears to be in a residential or industrial area, with buildings and trees on both sides. The sky is overcast, suggesting recent or ongoing rain, which could affect visibility and traction.\n\n### Possible Actions:\n1. **Brake and slow down**: The ego vehicle should slow down to maintain a safe distance from the car ahead. This is crucial in wet conditions to avoid hydroplaning and to allow for a longer stopping distance.\n2. **Maintain current speed**: If the car ahead is moving at a safe speed and there is no immediate threat, the ego vehicle could maintain its current speed. However, this is risky in wet conditions and should be avoided.\n3. **Accelerate**: Accelerating in wet conditions is not advisable as it can lead to hydroplaning and loss of control.\n\n### Why take this action:\n- **Safety**: Slowing down provides more time to react to any sudden changes in the road or the behavior of the car ahead.\n- **Visibility**: Wet roads can reduce visibility, making it harder to see obstacles or other vehicles.\n- **Traction**: Wet roads can reduce tire traction, increasing the risk of skidding.\n\n### Probability:\nThe probability of the ego vehicle taking the action of braking and slowing down is high. This is because the car ahead is directly in the path of the ego vehicle, and the wet road conditions increase the risk of accidents. The probability of maintaining current speed or accelerating is low due to the increased risk in wet conditions.\n\n### Conclusion:\nThe ego vehicle should brake and slow down to maintain a safe distance from the car ahead. This action is crucial to ensure safety in wet conditions."
+    }
+]

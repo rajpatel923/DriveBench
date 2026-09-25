@@ -1,0 +1,470 @@
+{
+  "results_dir": "results/stage1/qwen2.5-vl-7b_limit20",
+  "n_frames": 3,
+  "reps": 2000,
+  "seed": 0,
+  "runs": {
+    "C0_clean": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "C1_blank": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 0.6666666666666666,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.5,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "W_oracle": {
+      "overall": {
+        "acc": 0.4,
+        "n": 5,
+        "unparsed": 0.2,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 0.6666666666666666,
+        "n": 3,
+        "unparsed": 0.3333333333333333,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "W_shuffled": {
+      "overall": {
+        "acc": 0.4,
+        "n": 5,
+        "unparsed": 0.4,
+        "ci": [
+          0.0,
+          0.5
+        ]
+      },
+      "perception": {
+        "acc": 0.3333333333333333,
+        "n": 3,
+        "unparsed": 0.6666666666666666,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.5,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "P_lidar": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "W_cluster": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.2,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 0.6666666666666666,
+        "n": 3,
+        "unparsed": 0.3333333333333333,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.5,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "C0b_clean_rerun": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "S05": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "S10": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "S20": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "S10_cluster": {
+      "overall": {
+        "acc": 0.6,
+        "n": 5,
+        "unparsed": 0.0,
+        "ci": [
+          0.5,
+          1.0
+        ]
+      },
+      "perception": {
+        "acc": 1.0,
+        "n": 3,
+        "unparsed": 0.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "behavior": {
+        "acc": 0.0,
+        "n": 2,
+        "unparsed": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "delta_vs_blank": {
+    "C0_clean": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "W_oracle": {
+      "value": -0.19999999999999996,
+      "ci": [
+        -0.5,
+        0.0
+      ]
+    },
+    "W_shuffled": {
+      "value": -0.19999999999999996,
+      "ci": [
+        -1.0,
+        0.5
+      ]
+    },
+    "P_lidar": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "W_cluster": {
+      "value": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "C0b_clean_rerun": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "S05": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "S10": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "S20": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    },
+    "S10_cluster": {
+      "value": 0.0,
+      "ci": [
+        -0.5,
+        0.5
+      ]
+    }
+  },
+  "gap_closed": {
+    "W_oracle": {
+      "value": NaN,
+      "ci": [
+        -0.9999999999999999,
+        2.0000000000000004
+      ]
+    },
+    "W_shuffled": {
+      "value": NaN,
+      "ci": [
+        -1.0,
+        3.0
+      ]
+    },
+    "P_lidar": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "W_cluster": {
+      "value": NaN,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "C0b_clean_rerun": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "S05": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "S10": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "S20": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "S10_cluster": {
+      "value": NaN,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "c0_c0b_agreement": {
+    "n": 20,
+    "exact": 1.0,
+    "n_mcq_keys": 5,
+    "mcq_letter": 1.0
+  }
+}
